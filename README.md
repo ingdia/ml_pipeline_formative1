@@ -41,3 +41,61 @@ Run these steps in order from the repository root.
 ### Results
 
 All findings, the experiment table and the final model's test scores can be seen in the notebook outputs.
+
+
+# Task 2: Database Design (SQL and MongoDB)
+
+Dataset: **UCI Air Quality** (`AirQualityUCI.csv`), hourly readings from a multi-sensor air-quality station in an Italian city, 10 Mar 2004 to 4 Apr 2005 (9,357 rows, 13 measured variables).
+
+## Data preparation
+- The value `-200` marks a missing reading, so those values are not stored. Without this step, averages would be badly wrong.
+- NMHC(GT) is about 90% missing, so treat it with care.
+- Date format in the CSV is month/day/year.
+
+## 1. Relational design (PostgreSQL)
+![ERD](erd_diagram.png)
+
+| Table | Purpose |
+|---|---|
+| `stations` | One row per monitoring station |
+| `parameters` | Lookup of the 13 measured variables (code, description, unit, category: reference / sensor / weather) |
+| `measurements` | Fact table: one row per station, parameter and hour. PK = (`station_id`, `parameter_id`, `measured_at`); 104,940 rows |
+
+Using a long (narrow) format means a new sensor is added as a row in `parameters`, not as a new column.
+
+Files, run in order: `01_schema.sql`, `02_seed_stations_parameters.sql`, `03_load_postgres.py` (prepares `meas.csv`; load it with `\copy measurements FROM 'meas.csv' CSV HEADER`), `04_queries.sql`. Results: `04_results_sql.txt`.
+
+## 2. MongoDB design
+One document per hourly reading, with nested sub-documents for reference analyzers, low-cost sensors and weather. Missing values are omitted from the document. The station is embedded as a small sub-document, since there is only one station and the data is always read together with the reading. For several stations or heavy time-series use, a native time-series collection (`timeField: timestamp`, `metaField: station`) is the natural next step.
+
+```json
+{
+  "timestamp": "2004-03-10T18:00:00Z",
+  "station":   { "station_id": 1, "name": "Italian city air-quality station", "country": "Italy" },
+  "reference": { "co_mg_m3": 2.6, "nmhc_ug_m3": 150, "benzene_ug_m3": 11.9, "nox_ppb": 166, "no2_ug_m3": 113 },
+  "sensors":   { "co": 1360, "nmhc": 1046, "nox": 1056, "no2": 1692, "o3": 1268 },
+  "weather":   { "temp_c": 13.6, "rh_pct": 48.9, "abs_humidity": 0.7578 }
+}
+```
+
+Files: `05_mongo_load_and_queries.py` (loads data and runs the queries), `05_mongo_queries.js` (the same queries for `mongosh`), `05_results_mongo.txt`.
+
+## Queries (same four on both databases, identical results)
+1. **Date-range filter**: 11 Mar 2004, 06:00 to 10:00. CO rises from 0.7 to 2.2 mg/m3 and NO2 from 48 to 112 ug/m3 in the morning rush.
+2. **Monthly averages** of CO, benzene and NO2. NO2 peaks in Feb 2005 (160.7 ug/m3) and is lowest in Aug 2004 (70.1).
+3. **Top 5 days by average NO2** (days with at least 18 valid hours). The worst day is 11 Feb 2005 (223.3 ug/m3).
+4. **Average CO by hour of day**. Lowest at 05:00 (0.71 mg/m3), highest at 19:00 (3.73).
+
+The SQL version also includes a data-quality query counting missing readings per parameter.
+
+## How to run
+**MongoDB** (Atlas free tier or local):
+```
+pip install pymongo pandas dnspython
+set MONGO_URI=<your connection string>        # PowerShell: $env:MONGO_URI="..."
+python 05_mongo_load_and_queries.py
+```
+Put `AirQualityUCI.csv` in the same folder. Do not commit your connection string or password.
+
+## Screenshots
+See the `screenshots/` folder (Atlas collection view with 9,357 documents, query output).
