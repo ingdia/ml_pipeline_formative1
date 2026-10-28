@@ -52,8 +52,7 @@ Dataset: **UCI Air Quality** (`AirQualityUCI.csv`), hourly readings from a multi
 - Date format in the CSV is month/day/year.
 
 ## 1. Relational design (PostgreSQL)
-![ERD](erd_diagram.png)
-
+![ERD](task2_databases/docs/erd_diagram.png)
 | Table | Purpose |
 |---|---|
 | `stations` | One row per monitoring station |

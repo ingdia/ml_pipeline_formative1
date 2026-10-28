@@ -1,0 +1,14 @@
+INSERT INTO stations(station_name,country,setting,first_reading,last_reading) VALUES ('Italian city air-quality station','Italy','Road level, significantly polluted area','2004-03-10 18:00:00','2005-04-04 14:00:00');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('CO(GT)','True hourly avg CO concentration','mg/m3','reference','CO');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('PT08.S1(CO)','Tin oxide sensor response (CO)','sensor resp.','sensor','CO');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('NMHC(GT)','True hourly avg non-methane hydrocarbons','ug/m3','reference','NMHC');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('C6H6(GT)','True hourly avg benzene','ug/m3','reference','C6H6');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('PT08.S2(NMHC)','Titania sensor response (NMHC)','sensor resp.','sensor','NMHC');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('NOx(GT)','True hourly avg NOx','ppb','reference','NOx');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('PT08.S3(NOx)','Tungsten oxide sensor response (NOx)','sensor resp.','sensor','NOx');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('NO2(GT)','True hourly avg NO2','ug/m3','reference','NO2');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('PT08.S4(NO2)','Tungsten oxide sensor response (NO2)','sensor resp.','sensor','NO2');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('PT08.S5(O3)','Indium oxide sensor response (O3)','sensor resp.','sensor','O3');
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('T','Temperature','degC','weather',NULL);
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('RH','Relative humidity','%','weather',NULL);
+INSERT INTO parameters(code,description,unit,category,pollutant) VALUES ('AH','Absolute humidity','g/m3','weather',NULL);
