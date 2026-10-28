@@ -42,7 +42,6 @@ Run these steps in order from the repository root.
 
 All findings, the experiment table and the final model's test scores can be seen in the notebook outputs.
 
-
 # Task 2: Database Design (SQL and MongoDB)
 
 Dataset: **UCI Air Quality** (`AirQualityUCI.csv`), hourly readings from a multi-sensor air-quality station in an Italian city, 10 Mar 2004 to 4 Apr 2005 (9,357 rows, 13 measured variables).
