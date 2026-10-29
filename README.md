@@ -98,3 +98,35 @@ Put `AirQualityUCI.csv` in the same folder. Do not commit your connection string
 ## Screenshots
 See the `screenshots/` folder (Atlas collection view with 9,357 documents, query output).
 
+# Task 3: CRUD and Time-Series Query API
+
+A FastAPI service exposing CRUD (`POST`, `GET`, `PUT`, `DELETE`) and the two
+required query endpoints (latest record, records by date range) for both
+databases built in Task 2.
+
+| Resource | Endpoints |
+|---|---|
+| `/sql/measurements` (PostgreSQL) | `POST`, `GET` (list), `GET /latest`, `GET /range`, `GET /{station_id}/{parameter_id}/{measured_at}`, `PUT /{station_id}/{parameter_id}/{measured_at}`, `DELETE /{station_id}/{parameter_id}/{measured_at}` |
+| `/mongo/readings` (MongoDB) | `POST`, `GET` (list), `GET /latest`, `GET /range`, `GET /{id}`, `PUT /{id}`, `DELETE /{id}` |
+
+Files: `task3_api/db.py` (connections), `task3_api/schemas.py` (request/response
+models), `task3_api/sql_routes.py`, `task3_api/mongo_routes.py`, `task3_api/main.py`
+(FastAPI app), `task3_api/tests/` (pytest suite).
+
+## How to run
+1. Copy `.env.example` to `.env` and fill in `DATABASE_URL` (PostgreSQL loaded
+   in Task 2) and, optionally, `MONGO_URI`. If `MONGO_URI` is left empty, the
+   Mongo endpoints run against the in-memory `mongomock` emulator instead of a
+   real MongoDB instance.
+2. `pip install -r requirements.txt`
+3. `uvicorn task3_api.main:app --reload`
+4. Open `http://127.0.0.1:8000/docs` for interactive Swagger docs.
+
+## Tests
+```bash
+pytest task3_api/tests
+```
+The SQL tests fake the `psycopg2` connection (no live PostgreSQL required) to
+check routing, status codes and error handling. The MongoDB tests run against
+`mongomock` end to end.
+

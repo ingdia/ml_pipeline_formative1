@@ -10,3 +10,8 @@ uvicorn[standard]
 psycopg2-binary
 pymongo
 python-dotenv
+
+# Task 3: tests
+pytest
+httpx
+mongomock
