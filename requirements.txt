@@ -3,3 +3,10 @@ numpy
 matplotlib
 scikit-learn
 joblib
+
+# Task 3: CRUD API
+fastapi
+uvicorn[standard]
+psycopg2-binary
+pymongo
+python-dotenv
