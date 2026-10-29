@@ -97,3 +97,4 @@ Put `AirQualityUCI.csv` in the same folder. Do not commit your connection string
 
 ## Screenshots
 See the `screenshots/` folder (Atlas collection view with 9,357 documents, query output).
+
