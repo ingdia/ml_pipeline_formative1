@@ -125,33 +125,5 @@ models), `task3_api/sql_routes.py`, `task3_api/mongo_routes.py`, `task3_api/main
 ## Tests
 ```bash
 
-## Task 4: Prediction & Inference Pipeline Integration
 
-### Overview
-The prediction pipeline (`src/predict_pipeline.py`) performs real-time inference by consuming recent air quality observations from the Task 3 FastAPI server, engineering necessary lag and cyclical features, and generating single-step forward Carbon Monoxide ($\text{CO}$) forecasts.
-
----
-
-### Pipeline Workflow
-1. **API Data Ingestion**: Sends a `GET` request to `http://localhost:8000/api/v1/readings/recent?limit=48` to retrieve the latest 48 time-series records.
-2. **Preprocessing & Gap Handling**: Converts missing values (`-200` sentinels) to standard null values and applies time-based linear interpolation for gaps $\le 6$ hours.
-3. **Feature Engineering**: Constructs feature matrices matching Task 1 model training inputs:
-   - Target Lags (`co_t`, `co_lag_1`, `co_lag_2`, `co_lag_3`, `co_lag_23`)
-   - Rolling Statistics (`co_ma_3`, `co_ma_6`, `co_ma_24`, `co_std_24`)
-   - Auxiliary Sensors (`PT08.S1(CO)`, `NOx(GT)`, `T`, `RH`, `AH`, etc.)
-   - Cyclical Features (`hour_sin`, `hour_cos`, `is_weekend`, `dayofweek`, `month`)
-4. **Inference Execution**: Loads `models/co_forecast_model.joblib` (`HistGradientBoostingRegressor`) to compute the 1-hour ahead prediction.
-
----
-
-### Execution Instructions
-
-1. **Start the API Server** (Terminal 1):
-   ```powershell
-   python -m uvicorn task3_api.main:app --reload --port 8000
-pytest task3_api/tests
-```
-The SQL tests fake the `psycopg2` connection (no live PostgreSQL required) to
-check routing, status codes and error handling. The MongoDB tests run against
-`mongomock` end to end.
 
