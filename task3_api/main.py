@@ -26,3 +26,24 @@ app.include_router(mongo_router)
 @app.get("/", tags=["health"])
 def health():
     return {"status": "ok"}
+    
+@app.get("/api/v1/readings/recent")
+def get_mock_readings(limit: int = 48):
+    import pandas as pd
+    import numpy as np
+    from pathlib import Path
+    
+    csv_path = Path("notebooks/data/AirQualityUCI.csv")
+    if not csv_path.exists():
+        csv_path = Path("data/AirQualityUCI.csv")
+        
+    try:
+        df = pd.read_csv(csv_path, sep=";", encoding="utf-8-sig").dropna(how="all")
+        if "Date" not in df.columns:
+            df = pd.read_csv(csv_path, sep=",", encoding="utf-8-sig").dropna(how="all")
+    except Exception:
+        df = pd.read_csv(csv_path, sep=",", encoding="utf-8-sig").dropna(how="all")
+
+    df = df.loc[:, ~df.columns.str.startswith("Unnamed")].dropna(subset=["Date"]).head(limit)
+    df = df.replace({np.nan: None})
+    return df.to_dict(orient="records")
