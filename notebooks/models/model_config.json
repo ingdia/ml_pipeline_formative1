@@ -29,10 +29,5 @@
     "is_weekend",
     "month"
   ],
-  "max_gap_hours": 6,
-  "dropped_columns": [
-    "NMHC(GT)"
-  ],
-  "missing_value_code": -200,
-  "test_MAE": 0.3577
+  "test_MAE": 0.357
 }
